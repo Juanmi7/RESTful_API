@@ -38,6 +38,11 @@ db.on("disconnected", () => {
   console.log("Disconnected to database Mongoose");
 });
 
+
+const users = require("./Controller/userController");
+app.use("/users", users);
+
+
 app.listen(PORT, () => {
   console.log(`Server is running http://localhost:${PORT}`);
 });
