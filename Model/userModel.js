@@ -21,19 +21,37 @@ const userSchema = new Schema({
   },
   skills: {
     type: Array,
-    required: false,
+    required: true,
     default: [],
     validate: [
-      array.length === 0 ||
+      (array) =>
+        array.length === 0 ||
         array.every((element) => {
           const keys = Object.keys(element);
-          return (
-            keys.every((keys) => typeof element[keys[0]] === "boolean") &&
-            typeof element[keys[1]] === "string"
+          return keys.every(
+            () =>
+              typeof element[keys[0]] === "boolean" &&
+              typeof element[keys[1]] === "string"
           );
         }),
-        "No se ha introducido correctamente el array de skills",
+      "Wrong skills array",
     ],
   },
-  personaluty
+  personality: {
+    type: Object,
+    required: true,
+    validate: [
+      (obj) =>
+        obj.constructor === Object &&
+        Object.values(obj).every((element) => typeof element === "string"),
+      "Wrong personality object",
+    ],
+  },
 });
+// el primer parametro es el nombre del modelo
+// El segundo parametro es el esquema que se va a utilizar
+// El tercer parametro es el nombre de la coleccion en la base de datos
+// Si no se especifica, mongoose pluraliza el nombre del modelo
+const User = mongoose.model("User", userSchema, "users");
+
+module.exports = User;

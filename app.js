@@ -1,78 +1,48 @@
-const express = require("express");
-const mongoose = require("mongoose");
+const express = require("express"); // Importamos express
+const mongoose = require("mongoose"); // Importamos mongoose
 const PORT = 8000;
 
-//asi creamos la aplicacion express
-const app = express();
+// Así creamos la aplicación de express
+const app = express(); // Creamos el servidor
 
-//analizar los archivos .json
+// Analizar los archivos JSON
 app.use(express.json());
 
-//esto nos permite obtener la informacion de .env
-require("dotenv").config();
+// Esto nos permite obtener la informacion de configuracion de ".env"
+require("dotenv").config(); // Importamos dotenv
 
-//obtenemos la cadena de conexion a la base de datos desde las variables de entorno (fichero.env)
-const mongoUrl = process.env.DATABASE_URL_DEV;
+// Obtenemos la cadena de conexion a la base de datos desde las variables de entorno (fichero .env)
+const mongoUrl = process.env.DATABASE_URL_DEV; // Obtenemos la URL de la base de datos
 
-//configuracion con mongod\\b
-
-//useNewUrlParser le indica a mooongose que use el nuevo analizador de la url
-
+// Configuracion con mongoDb
+// Conectamos a la base de datos
+// El useNewUrlParser le indica a mongoose que utilice el nuevo analizador de URL de la cadena de conexión
 mongoose.connect(mongoUrl, { useNewUrlParser: true });
 
-//guardamos la conexion con mongoose
+// Guardar conexion con mooongose
+
 const db = mongoose.connection;
 
+// Verificamos que la conexion ha sido correcta, de lo contrario, mostramos un error
+// Si hay un error en la conexion
 db.on("error", (error) => {
-  console.error("Error", error);
+  console.error("Error: ", error);
 });
 
-//nos indica si la conexion se ha realizado
+// Nos indica que se ha establecido la conexion correctamente
 
 db.once("connected", () => {
-  console.log("Connected to database");
-});
-// nos indica si la conexion se ha cerrado
-db.on("disconnected", () => {
-  console.log("Disconnected to database Mongoose");
+  console.log("Success connect");
 });
 
-const users = require("./Controller/userController");
-app.use("/users", users);
+// Nos indica si se ha desconectado
+db.once("disconnected", () => {
+  console.log("Mongoose is disconnected");
+});
+
+const users = require("./Controller/userController"); // Importamos el modulo userController.js
+app.use("/users", users); // Usamos el modulo userController.js
 
 app.listen(PORT, () => {
-  console.log(`Server is running http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`); // Imprimimos mensaje de confirmacion
 });
-
-
-const ejemplo = [
-    { 
-    tactical_knowledge: true,
-    descripcion:"Gran conociemiento tactico y estrategico 2222222222"
-  },
-  {
-    tactical_knowledge: false,
-    descripcion:"Gran conociemiento tactico y estrategico",
-     edad:1,
-  },
-    
-    
-  
-  ];
-
-  console.log(
-    "resultado:",
-    ejemplo.every((elements) => {
-      const keys = Object.keys(elements);
-      console.log(elements);
-    
-      return keys.every(
-        () => 
-      typeof elements[keys[0]] === "boolean" &&
-      typeof elements[keys[1]] === "string" &&
-      typeof elements[keys[2]] === "number" &&
-      );
-    })
-  );
-
-
